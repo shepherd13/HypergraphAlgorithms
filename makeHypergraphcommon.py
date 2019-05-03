@@ -152,7 +152,7 @@ def pubmed_complete():
 	end = end_year-start_year + 1
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for year in range(start_year, end_year+1):
-		for line in open(dataset+"/pubmed_"+str(year)+".txt"):
+		for line in open(dataset+"/test_pubmed.txt"):
 			a = line.strip().split('\t')
 			if a[7] != '':
 				try:
@@ -166,8 +166,130 @@ def pubmed_complete():
 		count += 1
 		printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 
-	dblp = SimpleHypergraph(group_mapped_time, authors_set, output)
-	dblp.generate_complete_hypergraph()
+	pubmed = SimpleHypergraph(group_mapped_time, authors_set, output)
+	pubmed.generate_complete_hypergraph()
+
+def USPatent():
+	cat_mapped_authors = defaultdict(set)
+	cat_mapped_groups = defaultdict(set)
+	group_mapped_time = defaultdict(set)
+
+	patID_mapped_group = defaultdict(set)
+	for line in open(dataset+"/ainventor.txt", "r+"):
+		patID = line.split(',')[0]
+		try:
+			author = line.split(',')[2].strip('"') + " " + line.split(',')[1].strip('"')
+			patID_mapped_group[patID].add(author)
+		except:
+			error.write(line+'\n')
+
+	for line in open(dataset+"/apat63_99.txt", "r+"):
+		patID = line.split(',')[0]
+		dt = int(line.split(',')[1])
+		if dt >= start_year and dt <= end_year:
+			time = str(dt)
+			cat = line.split(',')[10]
+			if cat != '6':
+				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID]]))
+
+				group_mapped_time[group].add(time)
+				cat_mapped_groups[cat].add(group)
+				cat_mapped_authors[cat].update([author for author in group.split(",") if author != ''])
+				
+	uspatent = CategoryBasedHypergraph(group_mapped_time, cat_mapped_authors, cat_mapped_groups, output)
+	uspatent.generate_complete_hypergraph()
+	uspatent.generate_category_based_hypergraph()
+
+def USPatent_complete():
+	# These three dictionaries are required by the SimpleHypergraph class
+	authors_set = set()
+	group_mapped_time = defaultdict(set)
+
+	patID_mapped_group = defaultdict(set)
+	for line in open(dataset+"/ainventor.txt", "r+"):
+		patID = line.split(',')[0]
+		try:
+			author = line.split(',')[2].strip('"') + " " + line.split(',')[1].strip('"')
+			patID_mapped_group[patID].add(author)
+		except:
+			error.write(line+'\n')
+
+	for line in open(dataset+"/apat63_99.txt", "r+"):
+		patID = line.split(',')[0]
+		dt = int(line.split(',')[1])
+		if dt >= start_year and dt <= end_year:
+			time = str(dt)
+			cat = line.split(',')[10]
+			if cat != '6':
+				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID]]))
+
+				group_mapped_time[group].add(time)
+				authors_set.update(group.split(","))
+
+	uspatent = SimpleHypergraph(group_mapped_time, authors_set, output)
+	uspatent.generate_complete_hypergraph()
+
+def arxiv():
+	cat_mapped_authors = defaultdict(set)
+	cat_mapped_groups = defaultdict(set)
+	group_mapped_time = defaultdict(set)
+
+	data_folders = os.listdir(dataset)
+	count = 0
+	end = len(data_folders)
+	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
+	for folder in range(end):
+		cat = data_folders[folder]
+		for line in open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+"):
+			try:
+				a = line.strip().split('\t')
+				dt = datetime.strptime(a[2].strip(), '%Y-%m')
+				if dt.year >= start_year and dt.year <= end_year:
+					time = dt.strftime('%Y%m%d')
+					authors = a[4].split("|")
+					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors])).strip(",| ")
+					
+					group_mapped_time[group].add(time)
+					cat_mapped_groups[cat].add(group)
+					cat_mapped_authors[cat].update([author for author in group.split(",") if author != ''])
+			except:
+				error.write(line+'\n')
+		count += 1
+		printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
+	
+	arxiv = CategoryBasedHypergraph(group_mapped_time, cat_mapped_authors, cat_mapped_groups, output)
+	arxiv.generate_complete_hypergraph()
+	arxiv.generate_category_based_hypergraph()
+
+def arxiv_complete():
+	# These three dictionaries are required by the SimpleHypergraph class
+	authors_set = set()
+	group_mapped_time = defaultdict(set)
+
+	data_folders = os.listdir(dataset)
+	count = 0
+	end = len(data_folders)
+	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
+	for folder in range(end):
+		cat = data_folders[folder]
+		for line in open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+"):
+			try:
+				a = line.strip().split('\t')
+				dt = datetime.strptime(a[2].strip(), '%Y-%m')
+				if dt.year >= start_year and dt.year <= end_year:
+					time = dt.strftime('%Y%m%d')
+					authors = a[4].split("|")
+					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors])).strip(",| ")
+					
+					group_mapped_time[group].add(time)
+					authors_set.update(group.split(","))
+			except:
+				error.write(line+'\n')
+		count += 1
+		printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
+
+	arxiv = SimpleHypergraph(group_mapped_time, authors_set, output)
+	arxiv.generate_complete_hypergraph()
 
 if __name__ == '__main__':
 
@@ -177,8 +299,8 @@ if __name__ == '__main__':
 	start_year = int(args[3])
 	end_year = int(args[4])
 	output = args[5]
-	if output_type == "category":
-		support = args[6]
+	#if output_type == "category":
+	#	support = args[6]
 	
 	# Check if output folder exists
 	output += "_"+str(start_year)+"_"+str(end_year)
@@ -189,6 +311,5 @@ if __name__ == '__main__':
 		os.makedirs(output)
 
 	error = open(output+"/error.txt", "w")
-	#dblp()
-	pubmed()
+	arxiv_complete()
 	error.close()
