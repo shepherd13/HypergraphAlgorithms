@@ -1,5 +1,8 @@
 # HypergraphAlgorithms
-Contains python module to convert datasets to hypergraph matrices 
+Contains python module to convert datasets to hypergraph matrices for complex network analysis. This work is in conjunction with [MESH](http://mesh.cs.umn.edu/) framework developed to support scalable analysis of evolving hypergraph structures.
+
+We encourage you to cite our research paper if you have used the following datasets in your work. You can refer to:
+[Hypergraph Characterization of Small Groups. Ankit Sharma, Himanshu Kharakwal, Abhishek Chandra, Jaideep Srivastava.](http://mesh.cs.umn.edu/papers/hypchar.pdf)
 
 Datasets:
 1. [DBLP](https://www.aminer.cn/citation)
