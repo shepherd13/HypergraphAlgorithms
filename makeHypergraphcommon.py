@@ -291,6 +291,32 @@ def arxiv_complete():
 	arxiv = SimpleHypergraph(group_mapped_time, authors_set, output)
 	arxiv.generate_complete_hypergraph()
 
+
+def eumail_complete():
+	# These three dictionaries are required by the SimpleHypergraph class
+	authors_set = set()
+	group_mapped_time = defaultdict(set)
+
+	f = open(dataset+'/email-Eu-full-nverts.txt','r+')
+	g = open(dataset+'/email-Eu-full-simplices.txt','r+')
+	h = open(dataset+'/email-Eu-full-times.txt','r+')
+	try:
+		for nvert in f:
+			n = nvert.replace('\n','')
+			authors_group = []
+			for i in range(int(n)):
+				author = g.readline().replace('\n','')
+				authors_set.add(author)
+				authors_group.append(author)
+			group = ','.join(sorted(authors_group))
+			time = h.readline().replace('\n','')
+			group_mapped_time[group].add(time)
+	except:
+		error.write(line+'\n')
+
+	eumail = SimpleHypergraph(group_mapped_time, authors_set, output)
+	eumail.generate_complete_hypergraph()
+
 if __name__ == '__main__':
 
 	args = sys.argv
@@ -311,5 +337,5 @@ if __name__ == '__main__':
 		os.makedirs(output)
 
 	error = open(output+"/error.txt", "w")
-	arxiv_complete()
+	eumail_complete()
 	error.close()
