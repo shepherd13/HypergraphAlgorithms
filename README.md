@@ -14,7 +14,6 @@ I. Collaboration datasets
 
 II. Communication datasets
 1. [EUmail](http://www.cs.cornell.edu/~arb/data/email-Eu/index.html)
-2. [Enron](http://www.cs.cmu.edu/~enron/)
 
 III. Movie dataset
 1. [IMDB](https://www.imdb.com/interfaces/)
