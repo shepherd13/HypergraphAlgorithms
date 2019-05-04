@@ -102,8 +102,9 @@ Categories are already provided along with the patents. Patents are divided into
 Research paper carries information about its subject(category):
 1. Physics
 2. Mathematics
-3. Quantitative Biology
-4. Quantitative Finance
-5. Statistics
-6. Electrical Engineering and Systems Science
-7. Economics
+3. Computer Science
+4. Quantitative Biology
+5. Quantitative Finance
+6. Statistics
+7. Electrical Engineering and Systems Science
+8. Economics
