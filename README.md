@@ -99,7 +99,7 @@ Categories are already provided along with the patents. Patents are divided into
 
 ### 4. Arxiv:
 
-Research papers carries information about their subject(category):
+Research paper carries information about their subject(category):
 1. Physics
 2. Mathematics
 3. Quantitative Biology
