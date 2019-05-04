@@ -63,11 +63,11 @@ def dblp():
 					for cat in categories_mapped_journal:
 						if venue in categories_mapped_journal[cat]:
 							authors = ast.literal_eval(line)['authors']
-							group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors])).strip(",| ")
+							group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors if author != ''])).strip(",| ")
 							
 							group_mapped_time[group].add(time)
 							cat_mapped_groups[cat].add(group)
-							cat_mapped_authors[cat].update([author for author in group.split(",") if author != ''])
+							cat_mapped_authors[cat].update([author for author in group.split(",")])
 			except:
 				error.write(line+'\n')
 		count += 1
@@ -93,7 +93,7 @@ def dblp_complete():
 				if dt >= start_year and dt <= end_year:
 					time = datetime.strptime(str(dt), '%Y').strftime('%Y%m%d')
 					authors = ast.literal_eval(line)['authors']
-					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors])).strip(",| ")
+					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors if author != ''])).strip(",| ")
 
 					group_mapped_time[group].add(time)
 					authors_set.update(group.split(","))
@@ -128,11 +128,11 @@ def pubmed():
 					venue = a[13].lower()
 					for cat in categories_mapped_journal:
 						if venue in categories_mapped_journal[cat]:
-							group = ",".join(sorted([remove_accents(author.lower()) for author in a[7].strip(",| ").split(",")]))
+							group = ",".join(sorted([remove_accents(author.lower()) for author in a[7].strip(",| ").split(",") if author != '']))
 
 							group_mapped_time[group].add(time)
 							cat_mapped_groups[cat].add(group)
-							cat_mapped_authors[cat].update([author for author in group.split(",") if author != ''])
+							cat_mapped_authors[cat].update([author for author in group.split(",")])
 				except:
 					error.write(line+'\n')
 		count += 1
@@ -141,7 +141,6 @@ def pubmed():
 	pubmed = CategoryBasedHypergraph(group_mapped_time, cat_mapped_authors, cat_mapped_groups, output)
 	pubmed.generate_complete_hypergraph()
 	pubmed.generate_category_based_hypergraph()
-
 
 def pubmed_complete():
 	# These three dictionaries are required by the SimpleHypergraph class
@@ -157,7 +156,7 @@ def pubmed_complete():
 			if a[7] != '':
 				try:
 					time = datetime.strptime(a[1].strip(), '%Y/%m/%d %H:%M')
-					group = ",".join(sorted([remove_accents(author.lower()) for author in a[7].strip(",| ").split(",")]))
+					group = ",".join(sorted([remove_accents(author.lower()) for author in a[7].strip(",| ").split(",") if author != '']))
 					
 					group_mapped_time[group].add(time)
 					authors_set.update(group.split(","))
@@ -190,11 +189,11 @@ def USPatent():
 			time = str(dt)
 			cat = line.split(',')[10]
 			if cat != '6':
-				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID]]))
+				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID] if author != '']))
 
 				group_mapped_time[group].add(time)
 				cat_mapped_groups[cat].add(group)
-				cat_mapped_authors[cat].update([author for author in group.split(",") if author != ''])
+				cat_mapped_authors[cat].update([author for author in group.split(",")])
 				
 	uspatent = CategoryBasedHypergraph(group_mapped_time, cat_mapped_authors, cat_mapped_groups, output)
 	uspatent.generate_complete_hypergraph()
@@ -221,7 +220,7 @@ def USPatent_complete():
 			time = str(dt)
 			cat = line.split(',')[10]
 			if cat != '6':
-				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID]]))
+				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID] if author != '']))
 
 				group_mapped_time[group].add(time)
 				authors_set.update(group.split(","))
@@ -247,11 +246,11 @@ def arxiv():
 				if dt.year >= start_year and dt.year <= end_year:
 					time = dt.strftime('%Y%m%d')
 					authors = a[4].split("|")
-					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors])).strip(",| ")
+					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors if author != ''])).strip(",| ")
 					
 					group_mapped_time[group].add(time)
 					cat_mapped_groups[cat].add(group)
-					cat_mapped_authors[cat].update([author for author in group.split(",") if author != ''])
+					cat_mapped_authors[cat].update([author for author in group.split(",")])
 			except:
 				error.write(line+'\n')
 		count += 1
@@ -279,7 +278,7 @@ def arxiv_complete():
 				if dt.year >= start_year and dt.year <= end_year:
 					time = dt.strftime('%Y%m%d')
 					authors = a[4].split("|")
-					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors])).strip(",| ")
+					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors if author != ''])).strip(",| ")
 					
 					group_mapped_time[group].add(time)
 					authors_set.update(group.split(","))
@@ -290,7 +289,6 @@ def arxiv_complete():
 
 	arxiv = SimpleHypergraph(group_mapped_time, authors_set, output)
 	arxiv.generate_complete_hypergraph()
-
 
 def eumail_complete():
 	# These three dictionaries are required by the SimpleHypergraph class
@@ -316,6 +314,75 @@ def eumail_complete():
 
 	eumail = SimpleHypergraph(group_mapped_time, authors_set, output)
 	eumail.generate_complete_hypergraph()
+
+def imdb():
+	cat_mapped_authors = defaultdict(set)
+	cat_mapped_groups = defaultdict(set)
+	group_mapped_time = defaultdict(set)
+
+	patID_mapped_group = defaultdict(set)
+	for line in open(dataset+"/principals.tsv", "r+"):
+		values = line.replace('\n','').split('\t')
+		patID = values[0]
+		try:
+			author = values[2]
+			patID_mapped_group[patID].add(author)
+		except:
+			error.write(line+'\n')
+
+	for line in open(dataset+"/basics.tsv", "r+"):
+		values = line.replace('\n','').split('\t')
+		patID = values[0]
+		try:
+			dt = int(values[5])
+			if dt >= start_year and dt <= end_year:
+				time = str(dt)
+				#subcat = line.split(',')[11]
+				categories = values[8]
+				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID] if author != '']))
+
+				group_mapped_time[group].add(time)
+				for cat in categories.split(','):
+					cat_mapped_groups[cat].add(group)
+					cat_mapped_authors[cat].update([author for author in group.split(",")])
+		except:
+			error.write(line+'\n')
+
+	imdb = CategoryBasedHypergraph(group_mapped_time, cat_mapped_authors, cat_mapped_groups, output)
+	imdb.generate_complete_hypergraph()
+	imdb.generate_category_based_hypergraph()
+
+def imdb_complete():
+	# These three dictionaries are required by the SimpleHypergraph class
+	authors_set = set()
+	group_mapped_time = defaultdict(set)
+
+	patID_mapped_group = defaultdict(set)
+	for line in open(dataset+"/principals.tsv", "r+"):
+		values = line.replace('\n','').split('\t')
+		patID = values[0]
+		try:
+			author = values[2]
+			patID_mapped_group[patID].add(author)
+		except:
+			error.write(line+'\n')
+
+	for line in open(dataset+"/basics.tsv", "r+"):
+		values = line.replace('\n','').split('\t')
+		patID = values[0]
+		try:
+			dt = int(values[5])
+			if dt >= start_year and dt <= end_year:
+				time = str(dt)
+				group = ",".join(sorted([remove_accents(author.lower()) for author in patID_mapped_group[patID] if author != '']))
+
+				group_mapped_time[group].add(time)
+				authors_set.update(group.split(","))
+		except:
+			error.write(line+'\n')
+
+	imdb = SimpleHypergraph(group_mapped_time, authors_set, output)
+	imdb.generate_complete_hypergraph()
 
 if __name__ == '__main__':
 
