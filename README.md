@@ -21,7 +21,7 @@ Categories are formed on the basis of conference:
 9. Human Computer Interaction
 10. Image Processing and Computer Vision
 11. Information Systems
-l2. Machine Learning, Data Mining and Artificial Intelligence
+12. Machine Learning, Data Mining and Artificial Intelligence
 13. Signal Processing
 14. Software Engineering
 15. Web Mobile and Multimedia Technologies
@@ -99,7 +99,7 @@ Categories are already provided along with the patents. Patents are divided into
 
 ### 4. Arxiv:
 
-Research paper carries information about their subject(category):
+Research paper carries information about its subject(category):
 1. Physics
 2. Mathematics
 3. Quantitative Biology
