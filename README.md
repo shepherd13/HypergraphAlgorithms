@@ -20,7 +20,7 @@ III. Movie dataset
 
 The module is used to convert above mentioned datasets into complete hypergraphs or category based hypergraphs.
 ### 1. DBLP:
-Categories are formed on the basis of conference:
+Categories are formed on the basis of conferences where the research paper is published:
 1. Biomedical Engineering and Medical Informatics
 2. Computational Theory and Mathematics
 3. Computer Graphics and Computer Aided Design
