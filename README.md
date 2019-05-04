@@ -5,10 +5,19 @@ We encourage you to cite our research paper if you have used the following datas
 [Hypergraph Characterization of Small Groups. Ankit Sharma, Himanshu Kharakwal, Abhishek Chandra, Jaideep Srivastava.](http://mesh.cs.umn.edu/papers/hypchar.pdf)
 
 Datasets:
+
+I. Collaboration datasets
 1. [DBLP](https://www.aminer.cn/citation)
 2. [Pubmed](https://www.ncbi.nlm.nih.gov/pubmed/)
 3. [USPatent](http://www.nber.org/patents/)
 4. [Arxiv](https://arxiv.org/)
+
+II. Communication datasets
+1. [EUmail](http://www.cs.cornell.edu/~arb/data/email-Eu/index.html)
+2. [Enron](http://www.cs.cmu.edu/~enron/)
+
+III. Movie dataset
+1. [IMDB](https://www.imdb.com/interfaces/)
 
 The module is used to convert above mentioned datasets into complete hypergraphs or category based hypergraphs.
 ### 1. DBLP:
