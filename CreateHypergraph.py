@@ -1,6 +1,7 @@
 import csv
 import json
 from collections import defaultdict
+import os
 
 class SimpleHypergraph:
 	def __init__(self, group_mapped_time, authors_set, path):
@@ -22,14 +23,17 @@ class SimpleHypergraph:
 				writer.writerow([tupl[0], tupl[1]])
 
 	def generate_complete_hypergraph(self):
+		path = self.path+"/complete"
+		os.mkdir(path)
+
 		hid_uid = []
 		for group, ID in self.groups_mapped_ID.iteritems():
 			hid_uid.extend(map(lambda author: (ID, self.authors_mapped_ID[author]), group.split(',')))
-		self.write_tuples(self.path+"/hypergraph.csv", hid_uid)
+		self.write_tuples(path+"/hypergraph.csv", hid_uid)
 		hid_time = []
 		for group, ID in self.groups_mapped_ID.iteritems():
 			hid_time.extend(map(lambda time: (ID, time), self.group_mapped_time[group]))
-		self.write_tuples(self.path+"/hyperedge_time.csv", hid_time)
+		self.write_tuples(path+"/hyperedge_time.csv", hid_time)
 		
 		self.logs.write("Total authors in complete hypergraph : " +str(len(self.authors_mapped_ID)) + "\n")
 		self.logs.write("Total hyperedges in complete hypergraph : " +str(len(self.groups_mapped_ID)) + "\n")
@@ -74,17 +78,18 @@ class CategoryBasedHypergraph(SimpleHypergraph):
 					cat_mapped_group_ID_mapped_time[cat].append((group_catID, time))
 				for author in group.split(","):
 					cat_mapped_group_ID_mapped_authors_ID[cat].append((group_catID, cat_mapped_authors_mapped_authors_catID[cat][author]))
-		
+		path = self.path+"/category_based"
+		os.mkdir(path)
 		# Generate category based hypergraph and hyperedge_time
 		for cat in cat_mapped_group_ID_mapped_authors_ID:
-			self.write_tuples(self.path+"/hypergraph_"+cat+".csv", cat_mapped_group_ID_mapped_authors_ID[cat])
+			self.write_tuples(path+"/hypergraph_"+cat+".csv", cat_mapped_group_ID_mapped_authors_ID[cat])
 		for cat in cat_mapped_group_ID_mapped_time:
-			self.write_tuples(self.path+"/hyperedge_time_"+cat+".csv", cat_mapped_group_ID_mapped_time[cat])
+			self.write_tuples(path+"/hyperedge_time_"+cat+".csv", cat_mapped_group_ID_mapped_time[cat])
 			
 		# Store connections between complete hypergraph and category based hypergraphs
-		with open(self.path+"/authors_catID_to_ID.json", 'w') as a:
+		with open(path+"/authors_catID_to_ID.json", 'w') as a:
 			json.dump(cat_mapped_authors_catID_mapped_authors_ID, a)
-		with open(self.path+"/groups_catID_to_ID.json", 'w') as g:
+		with open(path+"/groups_catID_to_ID.json", 'w') as g:
 			json.dump(cat_mapped_group_catID_mapped_group_ID, g)
 
 	def __del__(self):
