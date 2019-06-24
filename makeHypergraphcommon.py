@@ -8,6 +8,7 @@ import ast
 import os
 import shutil
 from CreateHypergraph import CategoryBasedHypergraph, SimpleHypergraph
+import io
 
 # Print iterations progress
 def printProgress (iteration, total, prefix = '', suffix = '', decimals = 2, barLength = 100):
@@ -239,14 +240,18 @@ def arxiv():
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for folder in range(end):
 		cat = data_folders[folder]
-		for line in open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+"):
+		file = io.open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+", encoding="utf-16"):
+		while True:
 			try:
+				line = file.readline()		# reading line by line because of some encoding error in the dataset
+				if len(line) == 0:			# end of file
+					break
 				a = line.strip().split('\t')
 				dt = datetime.strptime(a[2].strip(), '%Y-%m')
 				if dt.year >= start_year and dt.year <= end_year:
 					time = dt.strftime('%Y%m%d')
 					authors = a[4].split("|")
-					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors if author != ''])).strip(",| ")
+					group = ",".join(sorted([author.strip(",| ").replace(',','').lower() for author in authors if author != ''])).strip(",| ")
 					
 					group_mapped_time[group].add(time)
 					cat_mapped_groups[cat].add(group)
@@ -271,14 +276,18 @@ def arxiv_complete():
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for folder in range(end):
 		cat = data_folders[folder]
-		for line in open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+"):
+		file = io.open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+", encoding="utf-16"):
+		while True:
 			try:
+				line = file.readline()		# reading line by line because of some encoding error in the dataset
+				if len(line) == 0:			# end of file
+					break
 				a = line.strip().split('\t')
 				dt = datetime.strptime(a[2].strip(), '%Y-%m')
 				if dt.year >= start_year and dt.year <= end_year:
 					time = dt.strftime('%Y%m%d')
 					authors = a[4].split("|")
-					group = ",".join(sorted([remove_accents(author.strip(",| ").replace(',','').lower()) for author in authors if author != ''])).strip(",| ")
+					group = ",".join(sorted([author.strip(",| ").replace(',','').lower() for author in authors if author != ''])).strip(",| ")
 					
 					group_mapped_time[group].add(time)
 					authors_set.update(group.split(","))
