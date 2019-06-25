@@ -38,7 +38,7 @@ def remove_accents(input_str):
 	only_ascii = nfkd_form.encode('ASCII', 'ignore')
 	return only_ascii
 
-def dblp():
+def dblp_category():
 	# These three dictionaries are required by the CategoryBasedHypergraph class
 	cat_mapped_authors = defaultdict(set)
 	cat_mapped_groups = defaultdict(set)
@@ -50,12 +50,12 @@ def dblp():
 		journals = filter(lambda j: j!='', journals)
 		categories_mapped_journal[cat[:-4]] = journals
 
-	data_files = os.listdir(dataset)
+	data_files = os.listdir(dataset_path)
 	count = 0
 	end = len(data_files)
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for file in range(end):
-		for line in open(dataset+"/"+data_files[file], "r+"):
+		for line in open(dataset_path+"/"+data_files[file], "r+"):
 			try:
 				dt = ast.literal_eval(line)['year']
 				if dt >= start_year and dt <= end_year:
@@ -83,12 +83,12 @@ def dblp_complete():
 	authors_set = set()
 	group_mapped_time = defaultdict(set)
 
-	data_files = os.listdir(dataset)
+	data_files = os.listdir(dataset_path)
 	count = 0
 	end = len(data_files)
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for file in range(end):
-		for line in open(dataset+"/"+data_files[file], "r+"):
+		for line in open(dataset_path+"/"+data_files[file], "r+"):
 			try:
 				dt = ast.literal_eval(line)['year']
 				if dt >= start_year and dt <= end_year:
@@ -106,7 +106,7 @@ def dblp_complete():
 	dblp = SimpleHypergraph(group_mapped_time, authors_set, output)
 	dblp.generate_complete_hypergraph()
 
-def pubmed():
+def pubmed_category():
 	cat_mapped_authors = defaultdict(set)
 	cat_mapped_groups = defaultdict(set)
 	group_mapped_time = defaultdict(set)
@@ -121,7 +121,7 @@ def pubmed():
 	end = end_year-start_year + 1
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for year in range(start_year, end_year+1):
-		for line in open(dataset+"/pubmed_"+str(year)+".txt"):
+		for line in open(dataset_path+"/pubmed_"+str(year)+".txt"):
 			a = line.strip().split('\t')
 			if a[7] != '':
 				try:
@@ -152,7 +152,7 @@ def pubmed_complete():
 	end = end_year-start_year + 1
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for year in range(start_year, end_year+1):
-		for line in open(dataset+"/test_pubmed.txt"):
+		for line in open(dataset_path+"/test_pubmed.txt"):
 			a = line.strip().split('\t')
 			if a[7] != '':
 				try:
@@ -169,13 +169,13 @@ def pubmed_complete():
 	pubmed = SimpleHypergraph(group_mapped_time, authors_set, output)
 	pubmed.generate_complete_hypergraph()
 
-def USPatent():
+def uspatent_category():
 	cat_mapped_authors = defaultdict(set)
 	cat_mapped_groups = defaultdict(set)
 	group_mapped_time = defaultdict(set)
 
 	patID_mapped_group = defaultdict(set)
-	for line in open(dataset+"/ainventor.txt", "r+"):
+	for line in open(dataset_path+"/ainventor.txt", "r+"):
 		patID = line.split(',')[0]
 		try:
 			author = line.split(',')[2].strip('"') + " " + line.split(',')[1].strip('"')
@@ -183,7 +183,7 @@ def USPatent():
 		except:
 			error.write(line+'\n')
 
-	for line in open(dataset+"/apat63_99.txt", "r+"):
+	for line in open(dataset_path+"/apat63_99.txt", "r+"):
 		patID = line.split(',')[0]
 		dt = int(line.split(',')[1])
 		if dt >= start_year and dt <= end_year:
@@ -200,13 +200,13 @@ def USPatent():
 	uspatent.generate_complete_hypergraph()
 	uspatent.generate_category_based_hypergraph()
 
-def USPatent_complete():
+def uspatent_complete():
 	# These three dictionaries are required by the SimpleHypergraph class
 	authors_set = set()
 	group_mapped_time = defaultdict(set)
 
 	patID_mapped_group = defaultdict(set)
-	for line in open(dataset+"/ainventor.txt", "r+"):
+	for line in open(dataset_path+"/ainventor.txt", "r+"):
 		patID = line.split(',')[0]
 		try:
 			author = line.split(',')[2].strip('"') + " " + line.split(',')[1].strip('"')
@@ -214,7 +214,7 @@ def USPatent_complete():
 		except:
 			error.write(line+'\n')
 
-	for line in open(dataset+"/apat63_99.txt", "r+"):
+	for line in open(dataset_path+"/apat63_99.txt", "r+"):
 		patID = line.split(',')[0]
 		dt = int(line.split(',')[1])
 		if dt >= start_year and dt <= end_year:
@@ -229,21 +229,21 @@ def USPatent_complete():
 	uspatent = SimpleHypergraph(group_mapped_time, authors_set, output)
 	uspatent.generate_complete_hypergraph()
 
-def arxiv():
+def arxiv_category():
 	cat_mapped_authors = defaultdict(set)
 	cat_mapped_groups = defaultdict(set)
 	group_mapped_time = defaultdict(set)
 
-	data_folders = os.listdir(dataset)
+	data_folders = os.listdir(dataset_path)
 	count = 0
 	end = len(data_folders)
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for folder in range(end):
 		cat = data_folders[folder]
-		file = io.open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+", encoding="utf-16"):
+		file = io.open(dataset_path+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+", encoding="utf-16"):
 		while True:
 			try:
-				line = file.readline()		# reading line by line because of some encoding error in the dataset
+				line = file.readline()		# reading line by line because of some encoding error in the dataset_path
 				if len(line) == 0:			# end of file
 					break
 				a = line.strip().split('\t')
@@ -270,13 +270,13 @@ def arxiv_complete():
 	authors_set = set()
 	group_mapped_time = defaultdict(set)
 
-	data_folders = os.listdir(dataset)
+	data_folders = os.listdir(dataset_path)
 	count = 0
 	end = len(data_folders)
 	printProgress(count, end, prefix = 'Progress:', suffix = 'Complete', barLength = 50)
 	for folder in range(end):
 		cat = data_folders[folder]
-		file = io.open(dataset+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+", encoding="utf-16"):
+		file = io.open(dataset_path+"/"+data_folders[folder]+"/"+data_folders[folder]+".txt", "r+", encoding="utf-16"):
 		while True:
 			try:
 				line = file.readline()		# reading line by line because of some encoding error in the dataset
@@ -304,9 +304,9 @@ def eumail_complete():
 	authors_set = set()
 	group_mapped_time = defaultdict(set)
 
-	f = open(dataset+'/email-Eu-full-nverts.txt','r+')
-	g = open(dataset+'/email-Eu-full-simplices.txt','r+')
-	h = open(dataset+'/email-Eu-full-times.txt','r+')
+	f = open(dataset_path+'/email-Eu-full-nverts.txt','r+')
+	g = open(dataset_path+'/email-Eu-full-simplices.txt','r+')
+	h = open(dataset_path+'/email-Eu-full-times.txt','r+')
 	try:
 		for nvert in f:
 			n = nvert.replace('\n','')
@@ -324,13 +324,13 @@ def eumail_complete():
 	eumail = SimpleHypergraph(group_mapped_time, authors_set, output)
 	eumail.generate_complete_hypergraph()
 
-def imdb():
+def imdb_category():
 	cat_mapped_authors = defaultdict(set)
 	cat_mapped_groups = defaultdict(set)
 	group_mapped_time = defaultdict(set)
 
 	patID_mapped_group = defaultdict(set)
-	for line in open(dataset+"/principals.tsv", "r+"):
+	for line in open(dataset_path+"/principals.tsv", "r+"):
 		values = line.replace('\n','').split('\t')
 		patID = values[0]
 		try:
@@ -339,7 +339,7 @@ def imdb():
 		except:
 			error.write(line+'\n')
 
-	for line in open(dataset+"/basics.tsv", "r+"):
+	for line in open(dataset_path+"/basics.tsv", "r+"):
 		values = line.replace('\n','').split('\t')
 		patID = values[0]
 		try:
@@ -367,7 +367,7 @@ def imdb_complete():
 	group_mapped_time = defaultdict(set)
 
 	patID_mapped_group = defaultdict(set)
-	for line in open(dataset+"/principals.tsv", "r+"):
+	for line in open(dataset_path+"/principals.tsv", "r+"):
 		values = line.replace('\n','').split('\t')
 		patID = values[0]
 		try:
@@ -376,7 +376,7 @@ def imdb_complete():
 		except:
 			error.write(line+'\n')
 
-	for line in open(dataset+"/basics.tsv", "r+"):
+	for line in open(dataset_path+"/basics.tsv", "r+"):
 		values = line.replace('\n','').split('\t')
 		patID = values[0]
 		try:
@@ -395,14 +395,28 @@ def imdb_complete():
 
 if __name__ == '__main__':
 
+	dataset_call = {
+		"dblp_complete": dblp_complete(),
+		"dblp_category": dblp_category(),
+		"pubmed_complete": pubmed_complete(),
+		"pubmed_category": pubmed_category(),
+		"uspatent_complete": uspatent_complete(),
+		"uspatent_category": uspatent_category(),
+		"arxiv_complete": arxiv_complete(),
+		"arxiv_category": arxiv_category(),
+		"imdb_complete": imdb_complete(),
+		"imdb_category": imdb_category(),
+		"eumail_complete": eumail_complete()}
+
 	args = sys.argv
-	output_type = args[1]
-	dataset = args[2]
-	start_year = int(args[3])
-	end_year = int(args[4])
-	output = args[5]
-	#if output_type == "category":
-	#	support = args[6]
+	dataset = args[1]
+	output_type = args[2]
+	dataset_path = args[3]
+	start_year = int(args[4])
+	end_year = int(args[5])
+	output = args[6]
+	if output_type == "category":
+		support = args[7]
 	
 	# Check if output folder exists
 	output += "_"+str(start_year)+"_"+str(end_year)
@@ -413,5 +427,5 @@ if __name__ == '__main__':
 		os.makedirs(output)
 
 	error = open(output+"/error.txt", "w")
-	eumail_complete()
+	dataset_call[dataset+"_"+output_type]
 	error.close()
