@@ -114,6 +114,7 @@ Categories are already provided along with the patents. Patents are divided into
 
 Research paper carries information about its subject(category):
 1. Physics
+  - astrophysics, condensed_matter, grqc, hepl, hepp, hept, hepx, mathematical_physics, nonlinear_sciences, nuclear_experiment, nuclear_theory, quantum_physics
 2. Mathematics
 3. Computer Science
 4. Quantitative Biology
