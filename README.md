@@ -19,6 +19,8 @@ III. Movie dataset
 1. [IMDB](https://www.imdb.com/interfaces/)
 
 The module is used to convert above mentioned datasets into complete hypergraphs or category based hypergraphs.
+
+#### Collaboration datasets
 ### 1. DBLP:
 Categories are formed on the basis of conferences where the research paper is published:
 1. Biomedical Engineering and Medical Informatics
@@ -119,3 +121,36 @@ Research paper carries information about its subject(category):
 6. Statistics
 7. Electrical Engineering and Systems Science
 8. Economics
+
+#### Movie dataset
+### 1. IMDB:
+Categories are formed on the basis of movie genres:
+1. Action
+2. Adult
+3. Adventure
+4. Animation
+5. Biography
+6. Comedy
+7. Crime
+8. Documentary
+9. Drama
+10. Family
+11. Fantasy
+12. Film-Noir
+13. Game-Show
+14. History
+15. Horror
+16. Musical
+17. Music
+18. Mystery
+19. General
+20. News
+21. Reality-TV
+22. Romance
+23. Sci-Fi
+24. Short
+25. Sport
+26. Talk-Show
+27. Thriller
+28. War
+29. Western
