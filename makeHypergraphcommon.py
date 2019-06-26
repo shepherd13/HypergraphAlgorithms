@@ -396,17 +396,17 @@ def imdb_complete():
 if __name__ == '__main__':
 
 	dataset_call = {
-		"dblp_complete": dblp_complete(),
-		"dblp_category": dblp_category(),
-		"pubmed_complete": pubmed_complete(),
-		"pubmed_category": pubmed_category(),
-		"uspatent_complete": uspatent_complete(),
-		"uspatent_category": uspatent_category(),
-		"arxiv_complete": arxiv_complete(),
-		"arxiv_category": arxiv_category(),
-		"imdb_complete": imdb_complete(),
-		"imdb_category": imdb_category(),
-		"eumail_complete": eumail_complete()}
+		"dblp_complete": dblp_complete,
+		"dblp_category": dblp_category,
+		"pubmed_complete": pubmed_complete,
+		"pubmed_category": pubmed_category,
+		"uspatent_complete": uspatent_complete,
+		"uspatent_category": uspatent_category,
+		"arxiv_complete": arxiv_complete,
+		"arxiv_category": arxiv_category,
+		"imdb_complete": imdb_complete,
+		"imdb_category": imdb_category,
+		"eumail_complete": eumail_complete}
 
 	args = sys.argv
 	dataset = args[1]
@@ -427,5 +427,5 @@ if __name__ == '__main__':
 		os.makedirs(output)
 
 	error = open(output+"/error.txt", "w")
-	dataset_call[dataset+"_"+output_type]
+	dataset_call[dataset+"_"+output_type]()
 	error.close()
